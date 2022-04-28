@@ -1,0 +1,9 @@
+node_modules
+build
+tmp
+
+src/@types
+src/common/graphql/graphql.schema.ts
+src/**/*.generated.ts
+
+*.js
