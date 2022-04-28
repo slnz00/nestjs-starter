@@ -5,7 +5,7 @@ export type CorsValidator = (origin: string | undefined, callback: CorsCallback)
 
 export default class CorsUtils {
   static createRegexValidator(allowedUrls: string[]): CorsValidator {
-    const urlRegexes = this._createUrlRegexes(allowedUrls)
+    const urlRegexes = this.createUrlRegexes(allowedUrls)
 
     return (origin, callback) => {
       const isAllowed = !origin || urlRegexes.some(regex => regex.test(origin))
@@ -14,7 +14,7 @@ export default class CorsUtils {
     }
   }
 
-  private static _createUrlRegexes(allowedUrls: string[]): RegExp[] {
+  private static createUrlRegexes(allowedUrls: string[]): RegExp[] {
     if (allowedUrls.includes('*')) {
       return [/^.+$/i]
     }

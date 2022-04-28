@@ -1,12 +1,8 @@
-import EnvironmentConfig from 'common/config/environment.config'
-import SecurityConfig from 'common/config/security.config'
-import AppConfig from 'common/config/app.config'
+import EnvironmentConfig from 'common/config/configs/environment.config'
+import SecurityConfig from 'common/config/configs/security.config'
+import AppConfig from 'common/config/configs/app.config'
 import { Type } from 'class-transformer'
 import { ValidateNested, validateSync } from 'class-validator'
-import * as dotenv from 'dotenv'
-
-// Load environment variables when ConfigService is imported
-loadEnvironmentFiles()
 
 export default class Config {
   @ValidateNested()
@@ -25,7 +21,7 @@ export default class Config {
   private static instance: Config | null
 
   private constructor() {
-    this._validate()
+    this.validate()
   }
 
   static getInstance(): Config {
@@ -36,27 +32,11 @@ export default class Config {
     return Config.instance
   }
 
-  private _validate(): void {
+  private validate(): void {
     const errors = validateSync(this, { skipMissingProperties: false })
 
     if (errors.length > 0) {
       throw new Error(errors.toString())
     }
-  }
-}
-
-// Environment variable load order is: .env, .env.[APP_ENV], runtime environment
-//  - The goal is to define environment variables in .env files instead of runtime environment
-//  - .env.[APP_ENV] files are used to define runtime environments in a version-controlled way
-function loadEnvironmentFiles(): void {
-  // Load .env to get/override existing APP_ENV environment variable
-  dotenv.config({ path: '.env', override: true })
-
-  const appEnv = process.env.APP_ENV
-  if (appEnv) {
-    dotenv.config({ path: `env/.env.${appEnv}`, override: true })
-
-    // Load .env again to override environment variables defined in .env.[APP_ENV] file
-    dotenv.config({ path: '.env', override: true })
   }
 }

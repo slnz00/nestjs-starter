@@ -1,9 +1,9 @@
 import { Request } from 'express'
 
 export default class GraphQLContext {
-  private readonly _req: Request
+  readonly req: Request
 
   constructor(req: Request) {
-    this._req = req
+    this.req = req
   }
 }

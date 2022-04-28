@@ -1,7 +1,6 @@
 FROM node:18-alpine
 
-RUN apk --update --no-cache add bash git less openssh gpgme && \
-    yarn global add heroku
+RUN apk --update --no-cache add bash git less openssh gpgme
 
 ENV APP_DIR /usr/app
 RUN mkdir -p $APP_DIR
@@ -10,4 +9,4 @@ WORKDIR $APP_DIR
 COPY package.json yarn.lock ./
 RUN yarn install --no-progress
 
-CMD yarn start:dev
+CMD tail -f /dev/null

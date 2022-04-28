@@ -12,16 +12,14 @@ RUN yarn install --no-progress
 
 COPY . .
 
-ARG ENV_NAME
-ARG ENV_SECRET
+ARG CONFIG_NAME
+ARG CONFIG_SECRET
 
-# Decrypt the environment defined by ENV_NAME variable using the secret defined in ENV_SECRET variable
-#   /env/.env.[ENV_NAME].encrypted (AES encrypted .env file) -> /env/.env.[ENV_NAME] (Plain text, standard .env file)
-# Copy decrypted .env file to the project root, named as .env
-#   /env/.env.[ENV_NAME] -> /.env
-# Delete env directory to keep the docker image clean by only maintaining the necessary environment variables (/.env)
-RUN yarn env:secret:save && \
-    yarn env:use && \
+# Decrypt the environment defined by CONFIG_NAME argument using the secret defined in CONFIG_SECRET argument
+#   /config/[CONFIG_NAME].encrypted (AES encrypted config.json file) -> /config/[CONFIG_NAME].json (Plain text, standard json file)
+# Delete other config files
+RUN yarn config:secret:save && \
+    yarn config:use && \
     rm -rf env
 
 RUN yarn build && \
@@ -30,6 +28,9 @@ RUN yarn build && \
 
 # App
 FROM node:18-alpine
+
+ARG CONFIG_NAME
+ENV CONFIG_ENV=$CONFIG_NAME
 
 RUN apk --update --no-cache add bash curl
 

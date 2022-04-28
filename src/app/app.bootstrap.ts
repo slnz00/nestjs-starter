@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import Config from 'common/config'
-import AppModule from './App.module'
+import AppModule from './app.module'
 import setupApp from './setup'
 
 export default async function bootstrap(): Promise<void> {
@@ -24,7 +24,7 @@ async function displayAppInfo(app: INestApplication): Promise<void> {
   const config = Config.getInstance()
   const getAppUrl = async (): Promise<string> => {
     const url = await app.getUrl()
-    return url.replace('[::1]', 'localhost')
+    return url.replace('::', 'localhost').replace('[::1]', 'localhost')
   }
 
   const environments = {
@@ -35,6 +35,6 @@ async function displayAppInfo(app: INestApplication): Promise<void> {
   console.info(
     `\nApplication is running on: ${await getAppUrl()}` +
       `\nNode environment: ${environments.node}` +
-      `\nApp environment: ${environments.app}\n`
+      `\nApp environment: ${environments.app}\n` // TODO: Config environment cfg
   )
 }

@@ -24,19 +24,19 @@ export default class SingletonInitRef {
   private readonly _instance: Singleton
   private _initializationStarted: boolean
 
-  private _dependencyRefs: SingletonInitRef[]
-  private _dependencyInitPromise?: Promise<DependencyResult>
-  private _deferredResult: DeferredPromise<InitializationResult>
+  private dependencyRefs: SingletonInitRef[]
+  private dependencyInitPromise?: Promise<DependencyResult>
+  private deferredResult: DeferredPromise<InitializationResult>
 
   constructor(id: string, instance: Singleton) {
     this._id = id
     this._instance = instance
     this._initializationStarted = false
 
-    this._dependencyRefs = []
-    this._deferredResult = AsyncUtils.createDeferredPromise()
+    this.dependencyRefs = []
+    this.deferredResult = AsyncUtils.createDeferredPromise()
 
-    this._setupTimeoutTimer()
+    this.setupTimeoutTimer()
   }
 
   get id(): string {
@@ -52,21 +52,21 @@ export default class SingletonInitRef {
   }
 
   async waitForDependencyInitializations(): Promise<DependencyResult> {
-    if (!this._dependencyInitPromise) {
+    if (!this.dependencyInitPromise) {
       throw new Error(
         `[${this.instance.constructor.name}] Failed to wait for dependency initializations, dependencies are not set`
       )
     }
 
-    return this._dependencyInitPromise
+    return this.dependencyInitPromise
   }
 
   async waitForInitialization(): Promise<InitializationResult> {
-    return this._deferredResult.promise
+    return this.deferredResult.promise
   }
 
   isDependency(ref: SingletonInitRef): boolean {
-    return this._dependencyRefs.some(depRef => depRef.id === ref.id)
+    return this.dependencyRefs.some(depRef => depRef.id === ref.id)
   }
 
   async startInitialization(init?: () => any, dependencyRefs: SingletonInitRef[] = []): Promise<void> {
@@ -75,7 +75,7 @@ export default class SingletonInitRef {
     }
 
     try {
-      this._setDependencies(dependencyRefs)
+      this.setDependencies(dependencyRefs)
       this._initializationStarted = true
 
       const asyncInit = async (): Promise<any> => init?.()
@@ -94,27 +94,27 @@ export default class SingletonInitRef {
   }
 
   resolveInitialization(result: InitializationResultType): void {
-    this._deferredResult.resolve({ result })
+    this.deferredResult.resolve({ result })
   }
 
   rejectInitialization(error: any): void {
-    this._deferredResult.resolve({
+    this.deferredResult.resolve({
       result: InitializationResultType.ERROR,
       error,
     })
   }
 
-  private _setDependencies(dependencyRefs: SingletonInitRef[]): void {
-    if (this._dependencyInitPromise) {
+  private setDependencies(dependencyRefs: SingletonInitRef[]): void {
+    if (this.dependencyInitPromise) {
       throw new Error(`[${this.instance.constructor.name}] Singleton dependencies are already set`)
     }
 
-    this._dependencyRefs = dependencyRefs
-    this._dependencyInitPromise = this._createDependencyInitPromise()
+    this.dependencyRefs = dependencyRefs
+    this.dependencyInitPromise = this.createDependencyInitPromise()
   }
 
-  private _createDependencyInitPromise(): Promise<DependencyResult> {
-    const dependencyInitPromises = this._dependencyRefs.map(ref => ref.waitForInitialization())
+  private createDependencyInitPromise(): Promise<DependencyResult> {
+    const dependencyInitPromises = this.dependencyRefs.map(ref => ref.waitForInitialization())
 
     return Promise.all(dependencyInitPromises).then(depResults => {
       const success = depResults.every(result => !result.error)
@@ -125,7 +125,7 @@ export default class SingletonInitRef {
     })
   }
 
-  private _setupTimeoutTimer(): void {
+  private setupTimeoutTimer(): void {
     const { INITIALIZATION_TIMEOUT } = SingletonInitRef
 
     const instanceName = this.instance.constructor.name
@@ -135,6 +135,6 @@ export default class SingletonInitRef {
       result: InitializationResultType.ERROR,
     }
 
-    setTimeout(() => this._deferredResult.resolve(timeoutResult), INITIALIZATION_TIMEOUT)
+    setTimeout(() => this.deferredResult.resolve(timeoutResult), INITIALIZATION_TIMEOUT)
   }
 }

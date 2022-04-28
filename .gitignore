@@ -4,11 +4,13 @@
 
 tmp
 
-/env/*
-!/env/.env.local-development
-!/env/.env.local-test
-!/env/.env.example
-!/env/*.encrypted
+/config/*
+!/config/default.json
+!/config/local-development.json
+!/config/local-test.json
+!/config/*.encrypted
+
+**/*.aes
 
 /dist
 /build
@@ -24,10 +26,7 @@ tmp
 tsconfig.tsbuildinfo
 tsconfig.build.tsbuildinfo
 
-*.aes
-
 .env
-config.json
 .meta.json
 
 /docker-volumes

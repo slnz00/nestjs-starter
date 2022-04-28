@@ -19,22 +19,22 @@ export default class SingletonInitializer {
   }
 
   startInitialization(instance: Singleton, init?: () => any, deps: Singleton[] = []): void {
-    const ref = this._getOrRegisterInitializationRef(instance)
+    const ref = this.getOrRegisterInitializationRef(instance)
     if (ref.initializationStarted) {
       throw new Error(`[${instance.constructor.name}]: Initialization process started multiple times`)
     }
 
-    const dependencyRefs = deps.map(dep => this._getOrRegisterInitializationRef(dep))
+    const dependencyRefs = deps.map(dep => this.getOrRegisterInitializationRef(dep))
 
-    this._checkForCircularDependencies(instance, deps)
+    this.checkForCircularDependencies(instance, deps)
 
     ref.startInitialization(init, dependencyRefs).catch(err => {
       this.logger.error(`[${instance.constructor.name}] Unhandled error during singleton initialization: ${err}`)
     })
   }
 
-  private _getOrRegisterInitializationRef(instance: Singleton): SingletonInitRef {
-    const existingRef = this._getInitializationRef(instance)
+  private getOrRegisterInitializationRef(instance: Singleton): SingletonInitRef {
+    const existingRef = this.getInitializationRef(instance)
     if (existingRef) {
       return existingRef
     }
@@ -46,15 +46,15 @@ export default class SingletonInitializer {
     return ref
   }
 
-  private _getInitializationRef(instanceOrId: Singleton | string): SingletonInitRef | null {
+  private getInitializationRef(instanceOrId: Singleton | string): SingletonInitRef | null {
     const isId = typeof instanceOrId === 'string'
     const refId = isId ? instanceOrId : instanceOrId[SINGLETON_REFERENCE_ID_SYMBOL]
 
     return this.initializationRefs.get(refId) || null
   }
 
-  private _getInitializationRefOrFail(instanceOrId: Singleton | string): SingletonInitRef {
-    const ref = this._getInitializationRef(instanceOrId)
+  private getInitializationRefOrFail(instanceOrId: Singleton | string): SingletonInitRef {
+    const ref = this.getInitializationRef(instanceOrId)
     if (!ref) {
       const isId = typeof instanceOrId === 'string'
       const instanceName = isId ? `Ref: ${instanceOrId}` : instanceOrId.constructor.name
@@ -64,11 +64,11 @@ export default class SingletonInitializer {
     return ref
   }
 
-  private _checkForCircularDependencies(instance: Singleton, deps: Singleton[]): void {
-    const ref = this._getInitializationRefOrFail(instance)
+  private checkForCircularDependencies(instance: Singleton, deps: Singleton[]): void {
+    const ref = this.getInitializationRefOrFail(instance)
 
     const circularDependency = deps.find(dep => {
-      const depRef = this._getInitializationRef(dep)
+      const depRef = this.getInitializationRef(dep)
       return !!depRef && depRef.isDependency(ref)
     })
 

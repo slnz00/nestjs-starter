@@ -10,8 +10,9 @@ deploy
 .idea
 
 .env
-/env/*
-!/env/*.encrypted
+/config/*
+/config/local.json
+!/config/deployment/*.encrypted
 
 **/*.aes
 
