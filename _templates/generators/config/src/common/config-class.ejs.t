@@ -9,6 +9,6 @@ const inputs = {
 
 const configClass = h.changeCase.pascal(inputs.configName) + 'Config'
 -%>
-const { env } = process
+import BaseConfig from 'common/config/base.config'
 
-export default class <%- h.changeCase.pascal(configClass) %> {}
+export default class <%- h.changeCase.pascal(configClass) %> extends BaseConfig {}

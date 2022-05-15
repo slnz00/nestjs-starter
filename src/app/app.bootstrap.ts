@@ -4,7 +4,7 @@ import Config from 'common/config'
 import AppModule from './app.module'
 import setupApp from './setup'
 
-export default async function bootstrap(): Promise<void> {
+export default async function bootstrap(): Promise<INestApplication> {
   const app = await NestFactory.create(AppModule, {
     logger: ['log', 'error', 'warn'],
   })
@@ -12,6 +12,8 @@ export default async function bootstrap(): Promise<void> {
   await setupApp(app)
   await startApp(app)
   await displayAppInfo(app)
+
+  return app
 }
 
 async function startApp(app: INestApplication): Promise<void> {
@@ -27,14 +29,11 @@ async function displayAppInfo(app: INestApplication): Promise<void> {
     return url.replace('::', 'localhost').replace('[::1]', 'localhost')
   }
 
-  const environments = {
-    node: config.environment.node || 'undefined',
-    app: config.environment.app || 'undefined',
-  }
+  const lines = [
+    '',
+    `Application is running on: ${await getAppUrl()}`,
+    `Node environment: ${config.environment.nodeEnv}`,
+  ]
 
-  console.info(
-    `\nApplication is running on: ${await getAppUrl()}` +
-      `\nNode environment: ${environments.node}` +
-      `\nApp environment: ${environments.app}\n` // TODO: Config environment cfg
-  )
+  console.info(lines.join('\n'))
 }

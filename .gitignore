@@ -4,11 +4,12 @@
 
 tmp
 
-/config/*
-!/config/default.json
-!/config/local-development.json
-!/config/local-test.json
-!/config/*.encrypted
+/config/local-*.json
+/config/local.json
+/config/environments/*
+!/config/environments/example-*.json
+!/config/environments/*.encrypted
+!/config/environments/.gitkeep
 
 **/*.aes
 

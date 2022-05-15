@@ -7,13 +7,13 @@ const OUTPUT_PATH = 'src/common/graphql/graphql.schema.ts'
 
 const watch = process.argv.includes('--watch')
 
-;(async () => {
+async function main () {
   await generateTypes()
 
   if (watch) {
     runWatch()
   }
-})()
+}
 
 function runWatch() {
   chokidar
@@ -29,3 +29,5 @@ async function generateTypes() {
     outputAs: 'class',
   })
 }
+
+main().catch(console.error)

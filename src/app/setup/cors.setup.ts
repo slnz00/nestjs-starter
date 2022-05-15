@@ -5,7 +5,7 @@ import CorsUtils from 'common/utils/cors.utils'
 export default async function setupCors(app: INestApplication): Promise<void> {
   const config = Config.getInstance()
 
-  const validator = CorsUtils.createRegexValidator(config.security.corsAllowedUrls)
+  const validator = CorsUtils.createRegexValidator(config.security.cors.allowedUrls)
 
   app.enableCors({
     optionsSuccessStatus: 200,

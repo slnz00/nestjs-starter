@@ -1,1 +1,10 @@
-{}
+{
+  "app": {
+    "port": 6060
+  },
+  "security": {
+    "cors": {
+      "allowedUrls": []
+    }
+  }
+}

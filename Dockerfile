@@ -17,10 +17,10 @@ ARG CONFIG_SECRET
 
 # Decrypt the environment defined by CONFIG_NAME argument using the secret defined in CONFIG_SECRET argument
 #   /config/[CONFIG_NAME].encrypted (AES encrypted config.json file) -> /config/[CONFIG_NAME].json (Plain text, standard json file)
-# Delete other config files
+# Delete encrypted config files
 RUN yarn config:secret:save && \
     yarn config:use && \
-    rm -rf env
+    rm -rf config/encrypted
 
 RUN yarn build && \
     rm -rf node_modules && \

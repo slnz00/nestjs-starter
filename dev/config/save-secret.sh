@@ -8,7 +8,7 @@ set -e
 [ -n "$1" ] && CONFIG_NAME=$1
 [ -n "$2" ] && CONFIG_SECRET=$2
 
-SECRET_PATH="./config/${CONFIG_NAME}.aes"
+SECRET_PATH="./config/environments/${CONFIG_NAME}.aes"
 
 rm -rf "${SECRET_PATH}"
 echo -e "${CONFIG_SECRET}\c" >> "${SECRET_PATH}"

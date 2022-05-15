@@ -12,7 +12,7 @@ deploy
 .env
 /config/*
 /config/local.json
-!/config/deployment/*.encrypted
+!/config/environments/*.encrypted
 
 **/*.aes
 

@@ -1,6 +1,6 @@
-import EnvironmentConfig from 'common/config/configs/environment.config'
-import SecurityConfig from 'common/config/configs/security.config'
-import AppConfig from 'common/config/configs/app.config'
+import EnvironmentConfig from 'common/config/environment.config'
+import SecurityConfig from 'common/config/security.config'
+import AppConfig from 'common/config/app.config'
 import { Type } from 'class-transformer'
 import { ValidateNested, validateSync } from 'class-validator'
 
